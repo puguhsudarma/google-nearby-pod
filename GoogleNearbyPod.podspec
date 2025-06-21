@@ -6,6 +6,7 @@ Pod::Spec.new do |spec|
     A CocoaPods package that provides Google's Nearby Connections functionality
     for iOS development. Includes all necessary dependencies and Swift API.
     Dependencies are downloaded automatically during pod install (like node_modules).
+    Fully compatible with Expo projects - use targeted :modular_headers => true instead of global use_modular_headers!
   DESC
 
   spec.homepage             = "https://github.com/puguhsudarma/google-nearby-pod"
@@ -32,78 +33,123 @@ Pod::Spec.new do |spec|
     fi
   CMD
   
+  # Enable modular headers support
+  spec.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    'CLANG_ENABLE_MODULES' => 'YES'
+  }
+  
   # Default subspec
   spec.default_subspec = 'Full'
   
-  # AbseilCpp subspec (minimal core utilities)
+  # AbseilCpp subspec (essential utilities only) - Modular compatible
   spec.subspec 'AbseilCpp' do |abseil|
+    # Include only essential, non-conflicting Abseil components
     abseil.source_files = [
-      "extracted/abseil/absl/base/*.{h,cc}",
-      "extracted/abseil/absl/strings/*.{h,cc}",
-      "extracted/abseil/absl/time/*.{h,cc}",
-      "extracted/abseil/absl/types/*.{h,cc}",
-      "extracted/abseil/absl/utility/*.{h,cc}",
-      "extracted/abseil/absl/memory/*.{h,cc}"
+      "extracted/abseil/absl/base/attributes.h",
+      "extracted/abseil/absl/base/config.h",
+      "extracted/abseil/absl/base/macros.h",
+      "extracted/abseil/absl/base/optimization.h",
+      "extracted/abseil/absl/strings/string_view.{h,cc}",
+      "extracted/abseil/absl/strings/str_cat.{h,cc}",
+      "extracted/abseil/absl/strings/str_join.{h,cc}",
+      "extracted/abseil/absl/types/optional.h",
+      "extracted/abseil/absl/types/span.h",
+      "extracted/abseil/absl/memory/memory.h",
+      "extracted/abseil/absl/utility/utility.h"
     ]
     
+    # Exclude all problematic files
     abseil.exclude_files = [
       "extracted/abseil/**/*_test.{h,cc}",
       "extracted/abseil/**/*_benchmark.{h,cc}",
       "extracted/abseil/**/*_testutil.{h,cc}",
-      "extracted/abseil/**/internal/**/*.h"
+      "extracted/abseil/**/internal/**/*",
+      "extracted/abseil/**/testing/**/*"
     ]
     
+    # Only expose clean public headers
     abseil.public_header_files = [
-      "extracted/abseil/absl/base/*.h",
-      "extracted/abseil/absl/strings/*.h", 
-      "extracted/abseil/absl/time/*.h",
-      "extracted/abseil/absl/types/*.h",
-      "extracted/abseil/absl/utility/*.h",
-      "extracted/abseil/absl/memory/*.h"
+      "extracted/abseil/absl/base/attributes.h",
+      "extracted/abseil/absl/base/config.h",
+      "extracted/abseil/absl/base/macros.h",
+      "extracted/abseil/absl/base/optimization.h",
+      "extracted/abseil/absl/strings/string_view.h",
+      "extracted/abseil/absl/strings/str_cat.h",
+      "extracted/abseil/absl/strings/str_join.h",
+      "extracted/abseil/absl/types/optional.h",
+      "extracted/abseil/absl/types/span.h",
+      "extracted/abseil/absl/memory/memory.h",
+      "extracted/abseil/absl/utility/utility.h"
     ]
     
     abseil.xcconfig = {
       'HEADER_SEARCH_PATHS' => '"$(PODS_TARGET_SRCROOT)/extracted/abseil"',
       'CLANG_CXX_LANGUAGE_STANDARD' => 'c++20',
       'CLANG_CXX_LIBRARY' => 'libc++',
-      'GCC_PREPROCESSOR_DEFINITIONS' => 'ABSL_MIN_LOG_LEVEL=0'
+      'GCC_PREPROCESSOR_DEFINITIONS' => 'ABSL_MIN_LOG_LEVEL=0',
+      'USE_HEADERMAP' => 'NO',
+      'ALWAYS_SEARCH_USER_PATHS' => 'NO'
+    }
+    
+    abseil.pod_target_xcconfig = {
+      'DEFINES_MODULE' => 'YES',
+      'CLANG_ENABLE_MODULES' => 'YES'
     }
     
     abseil.library = 'c++'
   end
   
-  # Core implementation subspec  
+  # Core implementation subspec - Modular compatible
   spec.subspec 'Core' do |core|
     core.dependency 'GoogleNearbyPod/AbseilCpp'
     core.dependency 'Protobuf', '~> 3.21'
     core.dependency 'BoringSSL-GRPC', '~> 0.0.24'
     
+    # Carefully selected source files to avoid conflicts
     core.source_files = [
+      # Nearby core files
       "extracted/nearby-core/connections/core.{h,cc}",
       "extracted/nearby-core/connections/status.{h,cc}",
       "extracted/nearby-core/connections/payload.{h,cc}",
       "extracted/nearby-core/connections/strategy.{h,cc}",
       "extracted/nearby-core/connections/listeners.h",
       "extracted/nearby-core/connections/*_options.{h,cc}",
-      "extracted/nearby-core/internal/platform/**/*.{h,cc}",
-      "extracted/nearby-core/internal/base/**/*.{h,cc}",
-      "extracted/nearby-core/internal/crypto/**/*.{h,cc}",
-      "extracted/swift-api/NearbyCoreAdapter/Sources/**/*.{h,m,mm}",
-      "extracted/deps/ukey2/**/*.{h,cc}",
-      "extracted/deps/smhasher/**/*.{h,cpp}",
-      "extracted/compiled_proto/**/*.{h,cc}"
+      
+      # Platform abstraction (essential only)
+      "extracted/nearby-core/internal/platform/logging.{h,cc}",
+      "extracted/nearby-core/internal/platform/byte_array.{h,cc}",
+      "extracted/nearby-core/internal/platform/exception.{h,cc}",
+      "extracted/nearby-core/internal/platform/feature_flags.{h,cc}",
+      
+      # Swift adapter (public interface only)
+      "extracted/swift-api/NearbyCoreAdapter/Sources/Public/**/*.{h,m,mm}",
+      
+      # Essential dependencies only
+      "extracted/deps/ukey2/src/main/cpp/src/securegcm/*.{h,cc}",
+      "extracted/deps/smhasher/src/MurmurHash3.{h,cpp}"
     ]
     
+    # Exclude problematic files
     core.exclude_files = [
       "extracted/**/*_test.{h,cc}",
       "extracted/**/*Test.{h,cc}",
       "extracted/**/test/**/*",
+      "extracted/**/testing/**/*",
       "extracted/nearby-core/connections/c/**/*",
       "extracted/nearby-core/connections/dart/**/*",
-      "extracted/nearby-core/connections/java/**/*"
+      "extracted/nearby-core/connections/java/**/*",
+      "extracted/**/internal/platform/implementation/**/*"
     ]
     
+    # Only expose essential public headers
     core.public_header_files = [
+      "extracted/nearby-core/connections/core.h",
+      "extracted/nearby-core/connections/status.h",
+      "extracted/nearby-core/connections/payload.h",
+      "extracted/nearby-core/connections/strategy.h",
+      "extracted/nearby-core/connections/listeners.h",
+      "extracted/nearby-core/connections/*_options.h",
       "extracted/swift-api/NearbyCoreAdapter/Sources/Public/**/*.h"
     ]
     
@@ -112,12 +158,18 @@ Pod::Spec.new do |spec|
         '"$(PODS_TARGET_SRCROOT)/extracted"',
         '"$(PODS_TARGET_SRCROOT)/extracted/nearby-core"',
         '"$(PODS_TARGET_SRCROOT)/extracted/deps"',
-        '"$(PODS_TARGET_SRCROOT)/extracted/compiled_proto"',
         '"$(PODS_TARGET_SRCROOT)/extracted/swift-api/NearbyCoreAdapter/Sources"'
       ].join(' '),
       'GCC_PREPROCESSOR_DEFINITIONS' => 'NO_WEBRTC=1 NEARBY_SWIFTPM=1',
       'CLANG_CXX_LANGUAGE_STANDARD' => 'c++20',
-      'CLANG_CXX_LIBRARY' => 'libc++'
+      'CLANG_CXX_LIBRARY' => 'libc++',
+      'USE_HEADERMAP' => 'NO',
+      'ALWAYS_SEARCH_USER_PATHS' => 'NO'
+    }
+    
+    core.pod_target_xcconfig = {
+      'DEFINES_MODULE' => 'YES',
+      'CLANG_ENABLE_MODULES' => 'YES'
     }
     
     core.ios.framework = 'Foundation', 'Network', 'Security'
@@ -125,7 +177,7 @@ Pod::Spec.new do |spec|
     core.library = 'c++'
   end
   
-  # Swift API subspec
+  # Swift API subspec - Already modular compatible
   spec.subspec 'Swift' do |swift|
     swift.dependency 'GoogleNearbyPod/Core'
     
@@ -136,6 +188,11 @@ Pod::Spec.new do |spec|
     swift.exclude_files = [
       "extracted/swift-api/NearbyConnections/Tests/**/*"
     ]
+    
+    swift.pod_target_xcconfig = {
+      'DEFINES_MODULE' => 'YES',
+      'SWIFT_VERSION' => '5.7'
+    }
     
     swift.ios.framework = 'Foundation'
     swift.osx.framework = 'Foundation'

@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+build/
+*.dSYM.zip
+*.ipa
+
+# CocoaPods
+Pods/
+*.xcworkspace
+
+# Build artifacts
+*.a
+*.o
+*.so
+
+# Temporary files
+temp/
+download/
+
+# Dependencies (downloaded dynamically like node_modules)
+extracted/
+temp-nearby/

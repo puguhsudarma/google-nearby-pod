@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                 = "GoogleNearbyPod"
-  spec.version              = "1.0.0"
+  spec.version              = "1.0.1"
   spec.summary              = "CocoaPods wrapper for Google Nearby Connections"
   spec.description          = <<-DESC
     A CocoaPods package that provides Google's Nearby Connections functionality
@@ -92,11 +92,6 @@ Pod::Spec.new do |spec|
       'ALWAYS_SEARCH_USER_PATHS' => 'NO'
     }
     
-    abseil.pod_target_xcconfig = {
-      'DEFINES_MODULE' => 'YES',
-      'CLANG_ENABLE_MODULES' => 'YES'
-    }
-    
     abseil.library = 'c++'
   end
   
@@ -167,11 +162,6 @@ Pod::Spec.new do |spec|
       'ALWAYS_SEARCH_USER_PATHS' => 'NO'
     }
     
-    core.pod_target_xcconfig = {
-      'DEFINES_MODULE' => 'YES',
-      'CLANG_ENABLE_MODULES' => 'YES'
-    }
-    
     core.ios.framework = 'Foundation', 'Network', 'Security'
     core.osx.framework = 'Foundation', 'Network', 'Security'
     core.library = 'c++'
@@ -190,7 +180,6 @@ Pod::Spec.new do |spec|
     ]
     
     swift.pod_target_xcconfig = {
-      'DEFINES_MODULE' => 'YES',
       'SWIFT_VERSION' => '5.7'
     }
     

@@ -1,5 +1,5 @@
 import Foundation
-import NearbyConnections
+import GoogleNearbyPod
 
 print("🚀 Testing GoogleNearbyPod in Native iOS")
 print("========================================")

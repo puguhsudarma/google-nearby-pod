@@ -4,7 +4,6 @@ use_frameworks!
 target 'NativeIOSExample' do
   # Test normal installation with modular headers to avoid BoringSSL-GRPC issues
   pod 'GoogleNearbyPod', :path => '../..', :modular_headers => true
-  pod 'BoringSSL-GRPC', :modular_headers => true
 end
 
 post_install do |installer|

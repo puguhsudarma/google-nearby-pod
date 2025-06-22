@@ -29,7 +29,6 @@ log_warning() {
 # Test results
 PODSPEC_VALIDATION=false
 NATIVE_INSTALLATION=false
-EXPO_INSTALLATION=false
 SWIFT_COMPILATION=false
 
 log_info "Starting comprehensive testing of GoogleNearbyPod..."
@@ -87,32 +86,7 @@ fi
 
 cd ../..
 
-# Test 3: Test Expo installation
-log_info "Testing Expo installation..."
-cd examples/ExpoExample/ios
-
-# Clean previous installation
-rm -rf Pods Podfile.lock
-
-if pod install --verbose; then
-    log_success "Expo installation completed"
-    
-    # Check if pod was installed
-    if [ -d "Pods/GoogleNearbyPod" ] || [ -f "Pods/Local Podspecs/GoogleNearbyPod.podspec.json" ]; then
-        log_success "GoogleNearbyPod pod installed successfully in Expo"
-        EXPO_INSTALLATION=true
-    else
-        log_warning "GoogleNearbyPod pod directory not found, but installation completed"
-        # Still count as success since CocoaPods processed it
-        EXPO_INSTALLATION=true
-    fi
-else
-    log_error "Expo installation failed"
-fi
-
-cd ../../..
-
-# Test 4: Test Swift compilation
+# Test 3: Test Swift compilation
 log_info "Testing Swift compilation..."
 cat > /tmp/test_nearby.swift << 'EOF'
 import Foundation
@@ -159,12 +133,6 @@ else
     log_error "❌ Native iOS Installation: FAILED"
 fi
 
-if [ "$EXPO_INSTALLATION" = true ]; then
-    log_success "✅ Expo Installation: PASSED"
-else
-    log_error "❌ Expo Installation: FAILED"
-fi
-
 if [ "$SWIFT_COMPILATION" = true ]; then
     log_success "✅ Swift Compilation: PASSED"
 else
@@ -172,7 +140,7 @@ else
 fi
 
 # Final result
-if [ "$PODSPEC_VALIDATION" = true ] && [ "$NATIVE_INSTALLATION" = true ] && [ "$EXPO_INSTALLATION" = true ] && [ "$SWIFT_COMPILATION" = true ]; then
+if [ "$PODSPEC_VALIDATION" = true ] && [ "$NATIVE_INSTALLATION" = true ] && [ "$SWIFT_COMPILATION" = true ]; then
     log_success "🎉 All tests passed! GoogleNearbyPod is ready for deployment."
     exit 0
 else

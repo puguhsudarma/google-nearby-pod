@@ -56,7 +56,19 @@ Pod::Spec.new do |spec|
       "extracted/abseil/absl/types/optional.h",
       "extracted/abseil/absl/types/span.h",
       "extracted/abseil/absl/memory/memory.h",
-      "extracted/abseil/absl/utility/utility.h"
+      "extracted/abseil/absl/utility/utility.h",
+      # Add missing log components that are actually used
+      "extracted/abseil/absl/log/check.h",
+      "extracted/abseil/absl/log/globals.{h,cc}",
+      "extracted/abseil/absl/log/log.h",
+      "extracted/abseil/absl/log/log_sink_registry.h",
+      "extracted/abseil/absl/log/log_sink.{h,cc}",
+      "extracted/abseil/absl/log/initialize.{h,cc}",
+      # Add missing time components that are actually used
+      "extracted/abseil/absl/time/time.{h,cc}",
+      "extracted/abseil/absl/time/civil_time.{h,cc}",
+      "extracted/abseil/absl/time/clock.{h,cc}",
+      "extracted/abseil/absl/time/duration.cc"
     ]
     
     # Exclude all problematic files
@@ -80,7 +92,18 @@ Pod::Spec.new do |spec|
       "extracted/abseil/absl/types/optional.h",
       "extracted/abseil/absl/types/span.h",
       "extracted/abseil/absl/memory/memory.h",
-      "extracted/abseil/absl/utility/utility.h"
+      "extracted/abseil/absl/utility/utility.h",
+      # Add missing public headers for log components
+      "extracted/abseil/absl/log/check.h",
+      "extracted/abseil/absl/log/globals.h",
+      "extracted/abseil/absl/log/log.h",
+      "extracted/abseil/absl/log/log_sink_registry.h",
+      "extracted/abseil/absl/log/log_sink.h",
+      "extracted/abseil/absl/log/initialize.h",
+      # Add missing public headers for time components
+      "extracted/abseil/absl/time/time.h",
+      "extracted/abseil/absl/time/civil_time.h",
+      "extracted/abseil/absl/time/clock.h"
     ]
     
     abseil.xcconfig = {

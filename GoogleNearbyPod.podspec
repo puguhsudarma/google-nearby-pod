@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                 = "GoogleNearbyPod"
-  spec.version              = "1.0.1"
+  spec.version              = "1.0.2"
   spec.summary              = "CocoaPods wrapper for Google Nearby Connections"
   spec.description          = <<-DESC
     A CocoaPods package that provides Google's Nearby Connections functionality

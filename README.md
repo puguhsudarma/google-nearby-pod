@@ -18,7 +18,7 @@ CocoaPods wrapper for Google's Nearby Connections library, providing peer-to-pee
 # Simple installation - works for most projects
 pod 'GoogleNearbyPod', 
   :git => 'https://github.com/puguhsudarma/google-nearby-pod.git',
-  :tag => '1.0.1'
+  :tag => '1.0.2'
 ```
 
 ### For Expo Projects or Complex Setups
@@ -27,11 +27,8 @@ pod 'GoogleNearbyPod',
 # For Expo or projects with header conflicts
 pod 'GoogleNearbyPod', 
   :git => 'https://github.com/puguhsudarma/google-nearby-pod.git',
-  :tag => '1.0.1',
+  :tag => '1.0.2',
   :modular_headers => true
-
-# Also add this required dependency when using modular headers
-pod 'BoringSSL-GRPC', :modular_headers => true
 ```
 
 ## Complete Expo Podfile Example
@@ -58,10 +55,8 @@ target 'YourExpoApp' do
   # 🚀 GoogleNearbyPod with targeted modular headers
   pod 'GoogleNearbyPod', 
     :git => 'https://github.com/puguhsudarma/google-nearby-pod.git',
-    :tag => '1.0.0',
+    :tag => '1.0.2',
     :modular_headers => true
-  
-  pod 'BoringSSL-GRPC', :modular_headers => true
 
   post_install do |installer|
     react_native_post_install(
@@ -90,7 +85,7 @@ end
 ## Usage
 
 ```swift
-import NearbyConnections
+import GoogleNearbyPod
 
 let connectionManager = ConnectionManager(
     serviceID: "your.app.service", 
